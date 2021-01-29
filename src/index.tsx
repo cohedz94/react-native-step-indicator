@@ -126,7 +126,14 @@ const StepIndicator = ({
   React.useEffect(effectCurrentPosition, [currentPosition, progressBarSize]);
 
   const radius = customStyles.stepIndicatorSize
-  const stepWidth = width / (2 * stepCount) + radius / 2 - stepCount * customStyles.stepStrokeWidth / 2
+  const leftItem = width / (2 * stepCount)
+  const stepSpace = (width - 2 * leftItem) / (stepCount - 1)
+  const stepWidth = stepSpace - radius - customStyles.stepStrokeWidth / 4
+
+  const calculateLeftMargin = (index) => {
+    return leftItem + 0.5 * radius + stepSpace * index
+  }
+
   const renderProgressBarBackground = () => {
     let progressBarBackgroundStyle: ViewStyle = {
       backgroundColor: customStyles.separatorUnFinishedColor,
@@ -134,14 +141,13 @@ const StepIndicator = ({
     };
 
     return new Array(stepCount - 1).fill(1).map((el, index) => {
-      const left = (width / (2 * stepCount) + radius / 2) + (stepWidth + radius - customStyles.stepStrokeWidth) * index
+      const left = calculateLeftMargin(index)
 
       progressBarBackgroundStyle = {
         ...progressBarBackgroundStyle,
         top: (height - customStyles.separatorStrokeWidth) / 2,
         left,
-        // right: left,
-        // right: width / (2 * stepCount) + 15,
+        // right: width / (2 * stepCount),
         width: stepWidth,
         height: customStyles.separatorStrokeUnfinishedWidth === 0
           ? customStyles.separatorStrokeWidth
@@ -168,7 +174,7 @@ const StepIndicator = ({
     };
 
     return new Array(stepCount - 1).fill(1).map((el, index) => {
-      const left = (width / (2 * stepCount) + radius / 2) + (stepWidth + radius - customStyles.stepStrokeWidth) * index
+      const left = calculateLeftMargin(index)
       if (direction === 'vertical') {
         progressBarStyle = {
           ...progressBarStyle,
